@@ -86,6 +86,22 @@ void setPixel(int x, int y, char color)
 	*adr = d;
 }
 
+void line(int x0, int y0, int x1, int y1, char color)
+{
+	/* from https://de.wikipedia.org/wiki/Bresenham-Algorithmus */
+    int dx =  abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy, e2; /* error value e_xy */
+
+    while (1) {
+        setPixel(x0, y0, color);
+        if (x0 == x1 && y0 == y1) break;
+        e2 = 2 * err;
+        if (e2 > dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
+        if (e2 < dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+    }
+}
+
 int myprintf(const char *fmt, ...);
 
 void print_smal_char(screenpos_t *pos, int ch)
@@ -262,6 +278,15 @@ int main()
 		setPixel(i + 193, i, 6);
 		setPixel(i + 199, i, 7);
 	}
+	
+	line(10, 100, 200, 100, 1);
+	line(10, 110, 200, 110, 1);
+	
+	line(10, 110, 10, 100, 1);
+	line(200, 100, 200, 110, 1);
+
+	line(10, 100, 200, 110, 2);
+	line(10, 110, 200, 100, 2);
 	
 	return 0;
 }
