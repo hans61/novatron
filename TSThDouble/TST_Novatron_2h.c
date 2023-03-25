@@ -102,6 +102,69 @@ void line(int x0, int y0, int x1, int y1, char color)
     }
 }
 
+void rasterCircle(int x0, int y0, int radius, char color)
+{
+	/* from https://de.wikipedia.org/wiki/Bresenham-Algorithmus */
+    int f = 1 - radius;
+    int ddF_x = 0;
+    int ddF_y = -2 * radius;
+    int x = 0;
+    int y = radius;
+
+    setPixel(x0, y0 + radius, color);
+    setPixel(x0, y0 - radius, color);
+    setPixel(x0 + radius, y0, color);
+    setPixel(x0 - radius, y0, color);
+
+    while(x < y)
+    {
+        if (f >= 0)
+        {
+            y -= 1;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x += 1;
+        ddF_x += 2;
+        f += ddF_x + 1;
+
+        setPixel(x0 + x, y0 + y, color);
+        setPixel(x0 - x, y0 + y, color);
+        setPixel(x0 + x, y0 - y, color);
+        setPixel(x0 - x, y0 - y, color);
+        setPixel(x0 + y, y0 + x, color);
+        setPixel(x0 - y, y0 + x, color);
+        setPixel(x0 + y, y0 - x, color);
+        setPixel(x0 - y, y0 - x, color);
+    }
+}
+
+void ellipse(int xm, int ym, int a, int b, char color)
+{
+	/* from https://de.wikipedia.org/wiki/Bresenham-Algorithmus */
+    int dx = 0, dy = b; /* im I. Quadranten von links oben nach rechts unten */
+    long a2 = a*a, b2 = b*b;
+    long err = b2-(2*b-1)*a2, e2; /* Fehler im 1. Schritt */
+
+    do
+    {
+        setPixel(xm + dx, ym + dy, color); /* I. Quadrant */
+        setPixel(xm - dx, ym + dy, color); /* II. Quadrant */
+        setPixel(xm - dx, ym - dy, color); /* III. Quadrant */
+        setPixel(xm + dx, ym - dy, color); /* IV. Quadrant */
+        e2 = 2*err;
+        if (e2 <  (2 * dx + 1) * b2) { ++dx; err += (2 * dx + 1) * b2; }
+        if (e2 > -(2 * dy - 1) * a2) { --dy; err -= (2 * dy - 1) * a2; }
+    }
+    while (dy >= 0);
+
+    while (dx++ < a) /* fehlerhafter Abbruch bei flachen Ellipsen (b=1) */
+    {
+        setPixel(xm+dx, ym, color); /* -> Spitze der Ellipse vollenden */
+        setPixel(xm-dx, ym, color);
+    }
+}
+
 int myprintf(const char *fmt, ...);
 
 void print_smal_char(screenpos_t *pos, int ch)
@@ -269,24 +332,29 @@ int main()
 	myprintsmalf("       Hello World\n");
 	
 	for(i=0; i<120; i++){
-		setPixel(i + 157, i, 0);
-		setPixel(i + 163, i, 1);
-		setPixel(i + 169, i, 2);
-		setPixel(i + 175, i, 3);
-		setPixel(i + 181, i, 4);
+		setPixel(i + 163, i, 0);
+		setPixel(i + 169, i, 1);
+		setPixel(i + 175, i, 2);
+		setPixel(i + 181, i, 3);
 		setPixel(i + 187, i, 5);
 		setPixel(i + 193, i, 6);
 		setPixel(i + 199, i, 7);
 	}
 	
 	line(10, 100, 200, 100, 1);
-	line(10, 110, 200, 110, 1);
-	
-	line(10, 110, 10, 100, 1);
 	line(200, 100, 200, 110, 1);
+	line(200, 110, 10, 110, 1);
+	line(10, 110, 10, 100, 1);
 
 	line(10, 100, 200, 110, 2);
 	line(10, 110, 200, 100, 2);
+	
+	rasterCircle(319-30, 30, 25, 1);
+	rasterCircle(319-30, 30, 21, 2);
+	rasterCircle(319-30, 30, 17, 3);
+	
+	ellipse(160, 60, 50, 25, 3);
+	ellipse(160, 60, 40, 20, 5);
 	
 	return 0;
 }
