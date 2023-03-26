@@ -19,3 +19,5 @@ For this I used a second IC socket (see pictures). I have adjusted the GAL progr
 
 I tested with dev7.rom and Marcel's chess program. The chess program and both SD cards work
 I tested with dev7.rom and Marcel's chess program. The chess program and both SD cards work
+
+![video hack](../picture/novatron-with-videopatch.jpg)
