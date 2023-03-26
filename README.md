@@ -8,3 +8,7 @@ Features:
 
 ## TSThDouble
 First tests with the higher graphic resolution of the Novatron.
+
+## My Novatron
+![novatron front](./picture/novatron-front.jpg)
+![novatron back](./picture/novatron-back.jpg)
